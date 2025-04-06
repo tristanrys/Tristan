@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Documents</title>
+    <link rel="stylesheet" href="documents.css">
+    <script>
+        function goTocomplaint() {
+            window.location.href = "complaint.html";
+        }
+    </script>
+    <script>
+        function goTocontact() {
+            window.location.href = "contact.html";
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Barangay Poblacion Portal</h1>
+        <nav>
+            <ul>
+                <li><button onclick="location.href='menu.html'">Home</button></li>
+                <li><button onclick="location.href='documents.html'">Request Documents</button></li>
+                <li><button onclick="location.href='complaint.html'">File a Complaint</button></li>
+                <li><button onclick="location.href='contact.html'">Contact Us</button></li>
+                <li><button onclick="location.href='login.html'">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h1>Request Documents</h1>
+            
+            <!-- Form for adding a request -->
+            <form id="requestForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+
+                <label for="documentType">Type of Document:</label>
+                <select id="documentType" required>
+                    <option value="Kindly Choose Here">Kindly Choose Here...</option>
+                    <option value="Barangay ID">Barangay ID</option>
+                    <option value="Certificate of Indigency">Certificate of Indigency</option>
+                    <option value="Barangay Clearance">Barangay Clearance</option>
+                </select>
+
+                <button type="submit" id="submitButton">Add Request</button>
+            </form>
+
+            <!-- Table to display requests -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Document Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="requestTableBody">
+                    <!-- Requests will be added here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script>
+        // Load requests from local storage when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRequests();
+        });
+
+        // Event listener for form submission
+        document.getElementById('requestForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const name = document.getElementById('name').value;
+            const documentType = document.getElementById('documentType').value;
+
+            // Check if the form is in update mode or add mode
+            if (document.getElementById('submitButton').innerText === 'Update Request') {
+                updateRequest(name, documentType);
+            } else {
+                addRequest(name, documentType);
+            }
+
+            // Reset the form and set the button text back to 'Add Request'
+            document.getElementById('requestForm').reset();
+            document.getElementById('submitButton').innerText = 'Add Request';
+        });
+
+        // Function to add a new request
+        function addRequest(name, documentType) {
+            const tableBody = document.getElementById('requestTableBody');
+            const row = document.createElement('tr');
+
+            // Create a new row with the request details and action buttons
+            row.innerHTML = `
+                <td>${name}</td>
+                <td>${documentType}</td>
+                <td class="actions">
+                    <button class="edit" onclick="editRequest(this)">Edit</button>
+                    <button class="delete" onclick="deleteRequest(this)">Delete</button>
+                </td>
+            `;
+
+            // Append the new row to the table body
+            tableBody.appendChild(row);
+            saveRequests(); // Save the updated requests to local storage
+        }
+
+        // Function to edit an existing request
+        function editRequest(button) {
+            const row = button.parentElement.parentElement;
+            const name = row.children[0].innerText;
+            const documentType = row.children[1].innerText;
+
+            // Populate the form with the existing request details
+            document.getElementById('name').value = name;
+            document.getElementById('documentType').value = documentType;
+
+            // Change the button text to 'Update Request' and store the row index
+            document.getElementById('submitButton').innerText = 'Update Request';
+            document.getElementById('submitButton').setAttribute('data-row-index', row.rowIndex);
+        }
+
+        // Function to update an existing request
+        function updateRequest(name, documentType) {
+            const rowIndex = document.getElementById('submitButton').getAttribute('data-row-index');
+            const tableBody = document.getElementById('requestTableBody');
+            const row = tableBody.rows[rowIndex - 1];
+
+            // Update the row with the new request details
+            row.cells[0].innerText = name;
+            row.cells[1].innerText = documentType;
+
+            saveRequests(); // Save the updated requests to local storage
+        }
+
+        // Function to delete an existing request
+        function deleteRequest(button) {
+            const row = button.parentElement.parentElement;
+            row.remove(); // Remove the row from the table
+            saveRequests(); // Save the updated requests to local storage
+        }
+
+        // Function to save requests to local storage
+        function saveRequests() {
+            const tableBody = document.getElementById('requestTableBody');
+            const rows = tableBody.getElementsByTagName('tr');
+            const requests = [];
+
+            // Iterate through the rows and collect the request details
+            for (let i = 0; i < rows.length; i++) {
+                const name = rows[i].children[0].innerText;
+                const documentType = rows[i].children[1].innerText;
+                requests.push({ name, documentType });
+            }
+
+            // Save the requests to local storage
+            localStorage.setItem('requests', JSON.stringify(requests));
+        }
+
+        // Function to load requests from local storage
+        function loadRequests() {
+            const requests = JSON.parse(localStorage.getItem('requests')) || [];
+            const tableBody = document.getElementById('requestTableBody');
+
+            // Iterate through the requests and create rows for each
+            for (const request of requests) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${request.name}</td>
+                    <td>${request.documentType}</td>
+                    <td class="actions">
+                        <button class="edit" onclick="editRequest(this)">Edit</button>
+                        <button class="delete" onclick="deleteRequest(this)">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+    </script>
+</body>
+</html>
