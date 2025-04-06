@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home: Barangay Poblacion</title>
+    <link rel="stylesheet" href="menu.css">
+    <script defer src="script.js"></script>
+    <script>
+        function goTologin() {
+            window.location.href = "login.html";
+        }
+    </script>
+    <script>
+        function goTodocuments() {
+            window.location.href = "documents.html";
+        }
+    </script>
+    <script>
+        function goTocomplaint() {
+            window.location.href = "complaint.html";
+        }
+    </script>
+    <script>
+        function goTocontact() {
+            window.location.href = "contact.html";
+        }
+    </script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Barangay Poblacion Portal</div>
+        <button class="menu-toggle">&#9776;</button>
+        <div class="nav-buttons">
+            <button class="btn" onclick="goTodocuments()">Request Documents</button>
+            <button class="btn" onclick="goTocomplaint()">File a Complaint</button>
+            <button class="btn" onclick="goTocontact()">Contact Us</button>
+            <button class="btn" onclick="goTologin()">Logout</button>
+        </div>
+    </nav>
+    <main>
+        <!-- Community News Section -->
+        <section class="community-news">
+            <h1>Community News</h1>
+            <div class="news-feed">
+                <div class="news-item">
+                    <h1>Earthquake Drill</h1>
+                    <img src="post1.jpg" alt="post1">
+                    <p>Sa March 13, 2025, alas-tres ng hapon, makiisa sa 1st Quarter Nationwide Simultaneous Earthquake Drill at magDuck, Cover and Hold. Tandaan, Bida ang Handa!</p>
+                </div>
+                <div class="news-item">
+                    <h1>Basketball: One Day League</h1>
+                    <img src="post2.jpg" alt="Photo 2">
+                    <p>🏀 Get Ready for the SK Poblacion One Day League Basketball for 19 years old and above! 🏀
+
+                        In celebration of Linggo ng Kabataan 2024, join us for an exciting basketball tournament on September 7, 2024 (Saturday) at the Martirez Covered Court!
+                        
+                        Team Size: Minimum of 8 players, Maximum of 10 players
+                        Limited Slots: Only 8 teams, so register now!
+                        Eligibility: Open to residents of Poblacion and their friends.
+                        Deadline of submission: September 4, 2024
+                        
+                        Come and showcase your skills on the court, enjoy the spirit of camaraderie, and celebrate youth empowerment with us! 🙌
+                        
+                        #SKPoblacionPateros #LinggoNgKabataan2024 See less</p>
+                </div>
+                <div class="news-item">
+                    <h1>Digital Art Contest</h1>
+                    <img src="post3.jpg" alt="Photo 3">
+                    <p>🎨 Tatlong Kamangha-manghang Likha mula sa Kabataan ng Barangay Poblacion, Siguradong Panalo! 🎨
+                        Nag-submit na ang tatlong magagaling na kalahok ng kanilang digital art para sa Digital Art Contest ng SK Poblacion! Siguradong may premyo silang matatanggap, ngunit ang gantimpala ay iaanunsyo sa huling araw ng Linggo ng Kabataan. Abangan kung sino ang tatanghaling kampeon! 🏆
+                        Kriteria sa Pagpapasya:
+                        ✅ Kahusayan sa Paggamit ng Digital Tools: 45%
+                        ✅ Kalikasan at Galing sa Disenyo: 25%
+                        ✅ Kalikasan ng Tema: 20%
+                        ✅ Audience Impact: 10%
+                        Ang entry na may pinakamaraming reacts at shares sa loob hanggang August 31 ay makakakuha ng buong 10% ng audience impact! 🎉</p>
+                </div>
+                <!-- Add more news items as needed -->
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
