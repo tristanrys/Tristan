@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File a Complaint</title>
+    <link rel="stylesheet" href="complaint.css">
+</head>
+<body>
+    <header>
+        <h1>Barangay Poblacion Portal</h1>
+        <nav>
+            <ul>
+                <li><button onclick="location.href='menu.html'">Home</button></li>
+                <li><button onclick="location.href='documents.html'">Request Documents</button></li>
+                <li><button onclick="location.href='complaints.html'">File a Complaint</button></li>
+                <li><button onclick="location.href='contact.html'">Contact Us</button></li>
+                <li><button onclick="location.href='login.html'">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h1>File a Complaint</h1>
+            
+            <!-- Form for filing a complaint -->
+            <form id="complaintForm">
+                <h2>Complainant's Information</h2>
+                <label for="complainantName">Name:</label>
+                <input type="text" id="complainantName" required>
+
+                <label for="address">Address:</label>
+                <input type="text" id="address" required>
+
+                <label for="contactNumber">Contact Number:</label>
+                <input type="text" id="contactNumber" required>
+
+                <h2>Complaint Details</h2>
+                <label for="complaintType">Complaint Type:</label>
+                <select id="complaintType" required>
+                    <option value="Noise Disturbance">Noise Disturbance</option>
+                    <option value="Waste Management Concerns">Waste Management Concerns</option>
+                    <option value="Illegal Activities">Illegal Activities</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="incidentDate">Incident Date:</label>
+                <input type="date" id="incidentDate" required>
+
+                <label for="incidentTime">Incident Time:</label>
+                <input type="time" id="incidentTime" required>
+
+                <label for="incidentLocation">Incident Location:</label>
+                <input type="text" id="incidentLocation" required>
+
+                <label for="description">Detailed Description:</label>
+                <textarea id="description" rows="4" required></textarea>
+
+                <h2>Agreement to Barangay Mediation</h2>
+                <label>
+                    <input type="checkbox" id="agreement" required>
+                    I agree to barangay intervention and mediation.
+                </label>
+
+                <button type="submit" id="submitButton">Submit Complaint</button>
+            </form>
+
+            <!-- Table to display complaints -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Contact Number</th>
+                        <th>Complaint Type</th>
+                        <th>Incident Date</th>
+                        <th>Incident Time</th>
+                        <th>Incident Location</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="complaintTableBody">
+                    <!-- Complaints will be added here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script>
+        // Load complaints from local storage when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            loadComplaints();
+        });
+
+        // Event listener for form submission
+        document.getElementById('complaintForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const complaint = {
+                name: document.getElementById('complainantName').value,
+                address: document.getElementById('address').value,
+                contactNumber: document.getElementById('contactNumber').value,
+                complaintType: document.getElementById('complaintType').value,
+                incidentDate: document.getElementById('incidentDate').value,
+                incidentTime: document.getElementById('incidentTime').value,
+                incidentLocation: document.getElementById('incidentLocation').value,
+                description: document.getElementById('description').value,
+                agreement: document.getElementById('agreement').checked
+            };
+
+            // Check if the form is in update mode or add mode
+            if (document.getElementById('submitButton').innerText === 'Update Complaint') {
+                updateComplaint(complaint);
+            } else {
+                addComplaint(complaint);
+            }
+
+            // Reset the form and set the button text back to 'Submit Complaint'
+            document.getElementById('complaintForm').reset();
+            document.getElementById('submitButton').innerText = 'Submit Complaint';
+        });
+
+        // Function to add a new complaint
+        function addComplaint(complaint) {
+            const tableBody = document.getElementById('complaintTableBody');
+            const row = document.createElement('tr');
+
+            // Create a new row with the complaint details and action buttons
+            row.innerHTML = `
+                <td>${complaint.name}</td>
+                <td>${complaint.address}</td>
+                <td>${complaint.contactNumber}</td>
+                <td>${complaint.complaintType}</td>
+                <td>${complaint.incidentDate}</td>
+                <td>${complaint.incidentTime}</td>
+                <td>${complaint.incidentLocation}</td>
+                <td>${complaint.description}</td>
+                <td class="actions">
+                    <button class="edit" onclick="editComplaint(this)">Edit</button>
+                    <button class="delete" onclick="deleteComplaint(this)">Delete</button>
+                </td>
+            `;
+
+            // Append the new row to the table body
+            tableBody.appendChild(row);
+            saveComplaints(); // Save the updated complaints to local storage
+        }
+
+        // Function to edit an existing complaint
+        function editComplaint(button) {
+            const row = button.parentElement.parentElement;
+            const complaint = {
+                name: row.children[0].innerText,
+                address: row.children[1].innerText,
+                contactNumber: row.children[2].innerText,
+                complaintType: row.children[3].innerText,
+                incidentDate: row.children[4].innerText,
+                incidentTime: row.children[5].innerText,
+                incidentLocation: row.children[6].innerText,
+                description: row.children[7].innerText
+            };
+
+            // Populate the form with the existing complaint details
+            document.getElementById('complainantName').value = complaint.name;
+            document.getElementById('address').value = complaint.address;
+            document.getElementById('contactNumber').value = complaint.contactNumber;
+            document.getElementById('complaintType').value = complaint.complaintType;
+            document.getElementById('incidentDate').value = complaint.incidentDate;
+            document.getElementById('incidentTime').value = complaint.incidentTime;
+            document.getElementById('incidentLocation').value = complaint.incidentLocation;
+            document.getElementById('description').value = complaint.description;
+
+            // Change the button text to 'Update Complaint' and store the row index
+            document.getElementById('submitButton').innerText = 'Update Complaint';
+            document.getElementById('submitButton').setAttribute('data-row-index', row.rowIndex);
+        }
+
+        // Function to update an existing complaint
+        function updateComplaint(complaint) {
+            const rowIndex = document.getElementById('submitButton').getAttribute('data-row-index');
+            const tableBody = document.getElementById('complaintTableBody');
+            const row = tableBody.rows[rowIndex - 1];
+
+            // Update the row with the new complaint details
+            row.cells[0].innerText = complaint.name;
+            row.cells[1].innerText = complaint.address;
+            row.cells[2].innerText = complaint.contactNumber;
+            row.cells[3].innerText = complaint.complaintType;
+            row.cells[4].innerText = complaint.incidentDate;
+            row.cells[5].innerText = complaint.incidentTime;
+            row.cells[6].innerText = complaint.incidentLocation;
+            row.cells[7].innerText = complaint.description;
+
+            saveComplaints(); // Save the updated complaints to local storage
+        }
+
+        // Function to delete an existing complaint
+        function deleteComplaint(button) {
+            const row = button.parentElement.parentElement;
+            row.remove(); // Remove the row from the table
+            saveComplaints(); // Save the updated complaints to local storage
+        }
+
+        // Function to save complaints to local storage
+        function saveComplaints() {
+            const tableBody = document.getElementById('complaintTableBody');
+            const rows = tableBody.getElementsByTagName('tr');
+            const complaints = [];
+
+            // Iterate through the rows and collect the complaint details
+            for (let i = 0; i < rows.length; i++) {
+                const complaint = {
+                    name: rows[i].children[0].innerText,
+                    address: rows[i].children[1].innerText,
+                    contactNumber: rows[i].children[2].innerText,
+                    complaintType: rows[i].children[3].innerText,
+                    incidentDate: rows[i].children[4].innerText,
+                    incidentTime: rows[i].children[5].innerText,
+                    incidentLocation: rows[i].children[6].innerText,
+                    description: rows[i].children[7].innerText
+                };
+                complaints.push(complaint);
+            }
+
+            // Save the complaints to local storage
+            localStorage.setItem('complaints', JSON.stringify(complaints));
+        }
+
+        // Function to load complaints from local storage
+        function loadComplaints() {
+            const complaints = JSON.parse(localStorage.getItem('complaints')) || [];
+            const tableBody = document.getElementById('complaintTableBody');
+
+            // Iterate through the complaints and create rows for each
+            for (const complaint of complaints) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${complaint.name}</td>
+                    <td>${complaint.address}</td>
+                    <td>${complaint.contactNumber}</td>
+                    <td>${complaint.complaintType}</td>
+                    <td>${complaint.incidentDate}</td>
+                    <td>${complaint.incidentTime}</td>
+                    <td>${complaint.incidentLocation}</td>
+                    <td>${complaint.description}</td>
+                    <td class="actions">
+                        <button class="edit" onclick="editComplaint(this)">Edit</button>
+                        <button class="delete" onclick="deleteComplaint(this)">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+    </script>
+</body>
+</html>
